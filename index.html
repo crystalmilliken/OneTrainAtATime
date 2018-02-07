@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+    <link rel="shortcut icon" href="assets/images/trainIcon.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+
+    <title>Destination Central</title>
+</head>
+<body>
+    <main class="container">
+        <header><h1><img src="assets/images/train.png" alt="train">Destination Central</h1>
+            <p>One Train at a Time</p>
+        </header>
+        <div class="card">
+            <div class="card-header">
+                Cool trains only...
+            </div>
+            <div class="card-body">
+                 <p class="card-text">***To update, choose item and use the below form to update information. Click "Save"***</p>               
+                <table class="table table-hover" id="mainTable">
+                    <thead>
+                        <tr>
+                        <th scope="col">Train Name</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Frequency(minutes)</th>
+                        <th scope="col">Next Arrival</th>
+                        <th scope="col">Minutes Away</th>
+                        <th colspan="2">Edit</th>
+                        </tr>
+                        <tbody id="tableBody"></tbody>
+                </thead>
+                </table>
+            </div>
+             <div class="card-body">
+                 <form action="submit" id="submitForm">
+                    <label for="name">Train Name</label><br>
+                    <input type="text" class="form-control" id="name"><br>
+                    <label for="destination">Destination</label><br>
+                    <input type="text" class="form-control" id="destination"><br>
+                    <lable for="firstTrainTime">First Train (HH:mm -military time)</label><br>
+                    <input  type="text" class="form-control" id="firstTrainTime"><br>
+                    <label for="frequency">Frequency(min)</label><br>
+                    <input type="text" class="form-control" id="frequency"><br>
+                    <button id="enter">Submit</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script src="assets/javascript/moment.js"></script>
+    <script src="assets/javascript/script.js"></script>
+    <script>
+    $("#enter").on("click", enterFirebase);
+    </script>
+ </body>
+</html>
