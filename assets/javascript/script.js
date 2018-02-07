@@ -6,67 +6,72 @@ var config = {
     storageBucket: "",
     messagingSenderId: "393092989074"
 };
-firebase.initializeApp(config);
-let database = firebase.database();
 
-//function takes form input and creates new entry
+firebase.initializeApp(config);
+const database = firebase.database();
+
+// Function takes form input and creates new entry
 function enterFirebase(){
     event.preventDefault();
     $("#mainTable tbody>tr").empty();
-    let name = $("#name").val();
-    let destination = $("#destination").val();
-    let firstTrainTime = $("#firstTrainTime").val();
-    let frequency = $("#frequency").val();
-    database.ref().push({name:name, destination:destination, firstTrainTime:firstTrainTime, frequency:frequency});
+    const name = $("#name").val();
+    const destination = $("#destination").val();
+    const firstTrainTime = $("#firstTrainTime").val();
+    const frequency = $("#frequency").val();
+
+    database.ref().push({
+        name:name, 
+        destination:destination, 
+        firstTrainTime:firstTrainTime, 
+        frequency:frequency
+    });
     $("#name").val("");
     $("#destination").val("");
     $("#firstTrainTime").val("");
     $("#frequency").val("");
     populateTable();
 }
-//creates an interval that updates table 
-function setUpdateTime(){
-    let updateData = setInterval(populateTable, 60000);
-}
-//main function that populates table
+
+// Main function that populates table
 function populateTable(){
     $("#mainTable tbody>tr").empty();
     database.ref().limitToLast(7).on("child_added", function(snapshot) {
-        let container = snapshot;
-        let snap = snapshot.val();
-        let now = moment([snap.firstTrainTime])
-        let firstTrainTimeConversion = moment(now, "hh:mm").subtract(1, "years");
-        let currentFrequency =  snap.frequency
-        let timeDifference = moment().diff(moment(firstTrainTimeConversion), "minutes")
-        let timeRemain = timeDifference % currentFrequency;
-        let minutesTillNextTrain = currentFrequency -timeRemain;
-        let addMinutesToTime = moment().add(minutesTillNextTrain, "minutes");
-        let nextArrival = moment(addMinutesToTime).format("hh:mm");
-        let newName = $("<td>").text(snap.name);
-        let newDestination = $("<td>").text(snap.destination);
-        let firstTrainTime= $("<td>").text(snap.firstTrainTime);
-        let frequency = $("<td>").text(snap.frequency);
-        let minAway = $("<td>").text(minutesTillNextTrain);
-        let newTr = $("<tr id='"+snap.name+"1'>");
-        let newTh = $("th");
-        let newNextArrivalTime = $("<td>").text(nextArrival);
-        let newButtonTd = $("<td>");
-        let newUpdateButtonTd = $("<td>");
-        let newButton = $("<button>").attr("id", snap.name).text("Remove").attr("class", "removeItem");
+        const snap = snapshot.val();
+        const now = moment([snap.firstTrainTime])
+        const firstTrainTimeConversion = moment(now, "hh:mm").subtract(1, "years");
+        const currentFrequency = snap.frequency
+        const timeDifference = moment().diff(moment(firstTrainTimeConversion), "minutes")
+        const timeRemain = timeDifference % currentFrequency;
+        const minutesTillNextTrain = currentFrequency -timeRemain;
+        const addMinutesToTime = moment().add(minutesTillNextTrain, "minutes");
+        const nextArrival = moment(addMinutesToTime).format("hh:mm");
+        const newName = $("<td>").text(snap.name);
+        const newDestination = $("<td>").text(snap.destination);
+        const frequency = $("<td>").text(snap.frequency);
+        const minAway = $("<td>").text(minutesTillNextTrain);
+        const newTr = $("<tr id='"+snap.name+"1'>");
+        const newNextArrivalTime = $("<td>").text(nextArrival);
+        const newButtonTd = $("<td>");
+        const newUpdateButtonTd = $("<td>");
+        const newButton = $("<button>").attr("id", snap.name);
+
+        newButton.text("Remove").attr("class", "removeItem");
         newButtonTd.append(newButton);
-        let newUpdateButton = $("<button>").attr("name", snap.name).text("Update").attr("class", "updateItem");
+        const newUpdateButton = $("<button>").attr("name", snap.name).text("Update").attr("class", "updateItem");
+        
         newUpdateButtonTd.append(newUpdateButton);
         newTr.append(newName).append(newDestination).append(frequency).append(newNextArrivalTime).append(minAway).append(newButtonTd).append(newUpdateButtonTd);       
         $("#tableBody").append(newTr)
         })
 }
-//removes selected item from firebase, fires populateTable after 
+// Removes selected item from firebase, fires populateTable after
 function removeFromFirebase(id){
     $("#mainTable tbody>tr").empty();
     database.ref().once("value", function(snapshot) {
         snapshot.forEach(function(child){
-            let childKey = child.key;
-            let childData = child.val();
+            const childKey = child.key;
+            const childData = child.val();
+
                 if(id === childData.name){
             database.ref(childKey).remove();
             populateTable();
@@ -74,31 +79,35 @@ function removeFromFirebase(id){
          });
     });
 }
-//main function that updates selected item
+// Main function that updates selected item
 function save(e){
     event.preventDefault();
     $("#updateButton").remove();
-    let target = e.target;
-    let key = target.getAttribute("name");
-    let name = $("#name").val();
-    let destination = $("#destination").val();
-    let firstTrainTime = $("#firstTrainTime").val();
-    let frequency = $("#frequency").val();
-    database.ref(key).update({name:name, destination:destination, firstTrainTime:firstTrainTime, frequency:frequency, dateAdded:firebase.database.ServerValue.TIMESTAMP});
+    const target = e.target;
+    const key = target.getAttribute("name");
+    const name = $("#name").val();
+    const destination = $("#destination").val();
+    const firstTrainTime = $("#firstTrainTime").val();
+    const frequency = $("#frequency").val();
+
+    database.ref(key).update({name: name, destination: destination, firstTrainTime:firstTrainTime, frequency:frequency, dateAdded:firebase.database.ServerValue.TIMESTAMP});
     $("#name").val("");
     $("#destination").val("");
     $("#firstTrainTime").val("");
     $("#frequency").val("");
     populateTable();
 }
-//function gets chosen element, populates form for user to change ***doesn't change firebase yet
+// Function gets chosen element, populates form for user to change ***
+// Doesn't change firebase yet
 function updateFirebaseData(name){
     database.ref().once("value", function(snapshot){
-        snapshot.forEach(function(child){
-            let childKey = child.key;
-            let childData = child.val();
+        snapshot.forEach((child) => {
+            const childKey = child.key;
+            const childData = child.val();
+
             if(name === childData.name){
-                let saveButton = $("<button>").attr("name", childKey).attr("id", "updateButton");
+                const saveButton = $("<button>").attr("name", childKey).attr("id", "updateButton");
+                
                 saveButton.text("Save");
                 $("#submitForm").append(saveButton);
                 $("#name").val(childData.name);
@@ -111,24 +120,32 @@ function updateFirebaseData(name){
     $("#tableBody").empty();
     populateTable();
 }
-//gets chosen item and sends to function to remove item from firebase. Also removes item from table
+// Gets chosen item and sends to function to remove item from firebase
+// Also removes item from table
 function removeThis(e){
     $("#mainTable tbody>tr").empty();
-    let target = e.target;
-    let id = target.getAttribute("id");
-    let itemToRemove = "#"+ id +"1";
+    const target = e.target;
+    const id = target.getAttribute("id");
+    const itemToRemove = `#${id}1`;
+
     $(itemToRemove).remove();
     removeFromFirebase(id);
     
 }
-//gets chosen item and sends to function to update item in firebase.
+// Gets chosen item and sends to function to update item in firebase.
 function updateItem(e){
-    let target = e.target;
-    let name = target.getAttribute("name");
+    const target = e.target;
+    const name = target.getAttribute("name");
+
     updateFirebaseData(name)
+}
+// Creates an interval that updates table
+function setUpdateTime(){
+    const updateData = setInterval(populateTable, 60000);
 }
 populateTable();
 setUpdateTime();
+$(document).on("click", "#enter", enterFirebase);
 $(document).on("click",".removeItem", function(e){removeThis(e)});
 $(document).on("click",".updateItem", function(e){updateItem(e)});
 $(document).on("click","#updateButton", function(e){save(e)})
