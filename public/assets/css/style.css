@@ -1,0 +1,35 @@
+@font-face {
+font-family: "JI Toy Train";
+src: url("../fonts/JI Toy Train.ttf");
+}
+header{
+    background-color: #bc7148;
+    color:white;
+    text-align:center;
+    padding: 2em;
+}
+header h1{
+    font-family: "JI Toy Train";
+    font-size: 3em;
+}
+.card{
+    margin-top: 2em;
+}
+.card-header{
+    background-color: #17783b;
+    color:white;
+}
+#enter{
+    float:left;
+}
+#updateButton{
+    float:left;
+    margin-left:1em;
+}
+.card-text{
+    font-size: 1em;
+    color:red;
+}
+#signOut{
+    margin-left:2em;
+}
